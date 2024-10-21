@@ -7,7 +7,7 @@ import com.makemytrip.entity.TravelPlan;
 
 public interface TravelPlanService {
 
-//Save Operation	
+    //Save Operation	
 	public String registerTravelPlan(TravelPlan travelPlan);
 
 	// Select Operation
@@ -22,6 +22,6 @@ public interface TravelPlanService {
 	// Delete Operation
 	public String deleteTravelplan(Long planId);
 
-	public Map<Integer, String> getTravelPlanCategories();
+	public Map<Long, String> getTravelPlanCategories();
 
 }
