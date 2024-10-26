@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.makemytrip.entity.TravelPlan;
+import com.makemytrip.exception.TravelPlanIdNotFoundException;
 import com.makemytrip.service.TravelPlanService;
 
 /**
@@ -34,29 +35,47 @@ public class TravelPlanController {
 
 	@PostMapping("/register")
 	public ResponseEntity<String> addTravelPlan(@RequestBody TravelPlan travelPlan) {
-
-		String travelResponse = travelPlanService.registerTravelPlan(travelPlan);
-		return new ResponseEntity<String>(travelResponse, HttpStatus.CREATED);
+		try {
+			String travelResponse = travelPlanService.registerTravelPlan(travelPlan);
+			return new ResponseEntity<String>(travelResponse, HttpStatus.CREATED);
+		} catch (Exception e) {
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 	@GetMapping("/get-all-travelplan")
 	public ResponseEntity<?> getAllTravelPlan() {
-
-		List<TravelPlan> listAllTravelPlan = travelPlanService.showAllTravelPlan();
-		return new ResponseEntity<List<TravelPlan>>(listAllTravelPlan, HttpStatus.CREATED);
+		try {
+			List<TravelPlan> listAllTravelPlan = travelPlanService.showAllTravelPlan();
+			return new ResponseEntity<List<TravelPlan>>(listAllTravelPlan, HttpStatus.CREATED);
+		} catch (Exception e) {
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 
 	}
 
 	@DeleteMapping("/delete-plan/{planId}")
 	public ResponseEntity<String> deleteTravelPlan(@PathVariable Long planId) {
 		String deleteMsg = travelPlanService.deleteTravelplan(planId);
-		return new ResponseEntity<String>(deleteMsg, HttpStatus.OK);
+		try {
+			return new ResponseEntity<String>(deleteMsg, HttpStatus.OK);
+		} catch (TravelPlanIdNotFoundException tp) {
+			return new ResponseEntity<String>(tp.getMessage(), HttpStatus.NO_CONTENT);
+		} catch (Exception e) {
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 	@PutMapping("/update-plan")
 	public ResponseEntity<String> modifyPlan(@RequestBody TravelPlan travelPlan) {
-		String deleteMsg = travelPlanService.updateTravelplan(travelPlan);
-		return new ResponseEntity<String>(deleteMsg, HttpStatus.OK);
+		try {
+			String deleteMsg = travelPlanService.updateTravelplan(travelPlan);
+			return new ResponseEntity<String>(deleteMsg, HttpStatus.OK);
+		} catch (TravelPlanIdNotFoundException tp) {
+			return new ResponseEntity<String>(tp.getMessage(), HttpStatus.NO_CONTENT);
+		} catch (Exception e) {
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 	@GetMapping("/get-travelplanbyid/{planId}")
@@ -64,16 +83,33 @@ public class TravelPlanController {
 		try {
 			TravelPlan TravelPlan = travelPlanService.showTravelPlanById(planId);
 			return new ResponseEntity<TravelPlan>(TravelPlan, HttpStatus.OK);
+		} catch (TravelPlanIdNotFoundException tp) {
+			return new ResponseEntity<String>(tp.getMessage(), HttpStatus.NO_CONTENT);
 		} catch (Exception e) {
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
 	@GetMapping("/get-travelplan-categories")
-	public ResponseEntity<Map<Long, String>> getTravelPlanCategories() {
-
-		Map<Long, String> categoriesMap = travelPlanService.getTravelPlanCategories();
-		return new ResponseEntity<Map<Long, String>>(categoriesMap, HttpStatus.OK);
-
+	public ResponseEntity<?> getTravelPlanCategories() {
+		try {
+			Map<Long, String> categoriesMap = travelPlanService.getTravelPlanCategories();
+			return new ResponseEntity<Map<Long, String>>(categoriesMap, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
+
+	@PutMapping("/status-change/{planId}/{status}")
+	public ResponseEntity<String> changeTravelPlanStatus(@PathVariable Long planId, @PathVariable String status) {
+		try {
+			String msg = travelPlanService.changeTravelPlanStatus(planId, status);
+			return new ResponseEntity<String>(msg, HttpStatus.OK);
+		} catch (TravelPlanIdNotFoundException tp) {
+			return new ResponseEntity<String>(tp.getMessage(), HttpStatus.NO_CONTENT);
+		} catch (Exception e) {
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
 }

@@ -23,5 +23,7 @@ public interface TravelPlanService {
 	public String deleteTravelplan(Long planId);
 
 	public Map<Long, String> getTravelPlanCategories();
+	
+	public String changeTravelPlanStatus(Long planId,String status);
 
 }

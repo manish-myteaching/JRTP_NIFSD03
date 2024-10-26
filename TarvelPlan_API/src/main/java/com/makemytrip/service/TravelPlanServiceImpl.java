@@ -3,6 +3,7 @@
  */
 package com.makemytrip.service;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,10 +12,13 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.makemytrip.config.AppConfigProperties;
+import com.makemytrip.constant.AppliationConstant;
 import com.makemytrip.dao.PlanCategoryDAO;
 import com.makemytrip.dao.TravelPlanDAO;
 import com.makemytrip.entity.PlanCategory;
 import com.makemytrip.entity.TravelPlan;
+import com.makemytrip.exception.TravelPlanIdNotFoundException;
 
 /**
  * @author manish.verma
@@ -28,17 +32,27 @@ public class TravelPlanServiceImpl implements TravelPlanService {
 	@Autowired
 	private PlanCategoryDAO planCategoryDAO;
 
+	private Map<String, String> message;
+
+	public TravelPlanServiceImpl(AppConfigProperties props) {
+		message = props.getMessage();
+	}
+
 	/*
 	 * This method for registering new travel plan
 	 */
 	@Override
 	public String registerTravelPlan(TravelPlan travelPlan) {
+		travelPlan.setCreatedDate(LocalDate.now());
+		travelPlan.setCreatedBy("Manish"); // By Session
+		travelPlan.setUpdateDate(LocalDate.now());
+		travelPlan.setUpdatedBy("Shyam"); // By Session
 		TravelPlan travel = travelPlanDAO.save(travelPlan);
 		if (travel != null) {
 			// Mail
-			return "Travel Plan is registred with id " + travel.getPlanId();
+			return message.get(AppliationConstant.TRAVEL_PLAN_REGISTER_SUCCESS) + travel.getPlanId();
 		}
-		return "Travel Plan is  not registred";
+		return message.get(AppliationConstant.TRAVEL_PLAN_REGISTER_FAIL);
 	}
 
 	/**
@@ -55,7 +69,7 @@ public class TravelPlanServiceImpl implements TravelPlanService {
 		if (travelPlan.isPresent()) {
 			return travelPlan.get();
 		} else {
-			throw new IllegalArgumentException("planid is not found");
+			throw new TravelPlanIdNotFoundException(message.get(AppliationConstant.FIND_BY_ID_FAIL));
 		}
 	}
 
@@ -68,9 +82,9 @@ public class TravelPlanServiceImpl implements TravelPlanService {
 		Optional<TravelPlan> travelplan = travelPlanDAO.findById(travelPlan.getPlanId());
 		if (travelplan.isPresent()) {
 			travelPlanDAO.save(travelPlan);
-			return travelPlan.getPlanId() + "Travel Plan is updated";
+			return travelPlan.getPlanId() + message.get(AppliationConstant.TRAVEL_PLAN_UPDATE);
 		} else {
-			return travelPlan.getPlanId() + " Travel plan is not  found";
+			throw new TravelPlanIdNotFoundException(message.get("find-by-id-fail"));
 		}
 	}
 
@@ -82,9 +96,10 @@ public class TravelPlanServiceImpl implements TravelPlanService {
 		Optional<TravelPlan> travelplan = travelPlanDAO.findById(planId);
 		if (travelplan.isPresent()) {
 			travelPlanDAO.deleteById(planId);
-			return " Travel plan deleted Scuccessfully  " + planId;
+
+			return message.get("travel-plan-delete-success") + planId;
 		} else {
-			return planId + " Travel plan is not  found";
+			throw new TravelPlanIdNotFoundException(message.get(AppliationConstant.FIND_BY_ID_FAIL));
 		}
 	}
 
@@ -94,11 +109,28 @@ public class TravelPlanServiceImpl implements TravelPlanService {
 	@Override
 	public Map<Long, String> getTravelPlanCategories() {
 		List<PlanCategory> listCategories = planCategoryDAO.findAll();
-		Map<Long, String> categoriesMap = new HashMap<>();		
-		listCategories.forEach(category->{
+		Map<Long, String> categoriesMap = new HashMap<>();
+		listCategories.forEach(category -> {
 			categoriesMap.put(category.getCategoryId(), category.getCategoryName());
 		});
 		return categoriesMap;
+	}
+
+	/*
+	 * Method for changed travel plan status.
+	 */
+	@Override
+	public String changeTravelPlanStatus(Long planId, String status) {
+		Optional<TravelPlan> travelplan = travelPlanDAO.findById(planId);
+		if (travelplan.isPresent()) {
+			TravelPlan plan = travelplan.get();
+			plan.setActiveSW(status);
+			travelPlanDAO.save(plan);
+			return planId + message.get(AppliationConstant.TRAVEL_PLAN_STATUS_CHANGE);
+		} else {
+			throw new TravelPlanIdNotFoundException(message.get(AppliationConstant.FIND_BY_ID_FAIL));
+		}
+
 	}
 
 }

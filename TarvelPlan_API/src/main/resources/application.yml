@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: TarvelPlan_API
+  datasource:
+    driver-class-name: org.h2.Driver
+    username: sa
+    url: jdbc:h2:file:D:/FULL_STACK_JAVA_BATCH/NI_JRTP03/H2-DB/travelplanDB;NON_KEYWORDS=USER
+    password: ''
+  h2:
+    console:
+      enabled: 'true'
+      web-allow-others: 'true'
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: 'true'
+    hibernate:
+      ddl-auto: update
+      
+     
+travelplan:
+  api:
+    message: 
+       find-by-id-fail: planid is not found
+       travel-plan-register-success: Travel Plan is registred with id 
+       travel-plan-register-fail: Travel Plan is not registerd
+       travel-plan-update: Travel Plan is updated
+       travel-plan-delete-success: Travel plan deleted Scuccessfully  
+       travel-plan-status-change: Travel Plan Status is Changed.
