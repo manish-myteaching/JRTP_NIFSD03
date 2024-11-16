@@ -16,12 +16,12 @@ public class ValidationUtil {
     @Autowired
     private UserRepository userRepository;
 
-    private static final String USER_ALREADY_EXISTS = "User already exists. Please register again.";
-
    public void validateUser(User user) {
 
         // Field validation
         validateRequiredFields(user);
+        
+        //Valid Email ID and PhoneNo
 
         // User existence validation for email, phone number, and user ID
         validateUserExistence(user);
@@ -37,6 +37,15 @@ public class ValidationUtil {
         if (isBlank(user.getEmail())) {
             throw new UserDataException("Email Address is required");
         }
+        if (isBlank(user.getPhoneNumber())) {
+            throw new UserDataException("Phone Number is required");
+        }  
+        if (isBlank(user.getSsnNo())) {
+            throw new UserDataException("SSN Number is required");
+        }
+        if (isBlank(user.getUserId())) {
+            throw new UserDataException("User Id is required");
+        }     
     }
 
     private void validateUserExistence(User user) {

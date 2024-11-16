@@ -4,10 +4,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 
-import com.bankofamerica.entity.User;
-import com.bankofamerica.repository.UserRepository;
-import com.bankofamerica.service.UserService;
-
 @SpringBootApplication
 public class OnlineInternateBankingWebApplication {
 
@@ -22,21 +18,21 @@ public class OnlineInternateBankingWebApplication {
 //		user.setEmail("manish.verma@gmail.com");
 //		user.setPhoneNumber("8585856232");
 //		user.setSsnNo("5555-5555-2222");
-//		user.setUserId("manish123");
+//		user.setUserId("m	anish123");
 //		user.setUserPassword("123456");
 		//userRepository.save(user);
 		
-		UserService userService = applicationContext.getBean(UserService.class, "userService");
-		User user = new User();
-		user.setFirstName("Rohit");
-		user.setLastName("Sharma");
-		user.setEmail("Rohit.Sharma@gmail.com");
-		user.setPhoneNumber("8585856239");
-		user.setSsnNo("5555-5555-2222");
-		user.setUserId("manish1234");
-		user.setUserPassword("123456");
-		userService.registerUser(user);
-		
+//		UserService userService = applicationContext.getBean(UserService.class, "userService");
+//		User user = new User();
+//		user.setFirstName("Rohit");
+//		user.setLastName("Sharma");
+//		user.setEmail("Rohit.Sharma@gmail.com");
+//		user.setPhoneNumber("8585856239");
+//		user.setSsnNo("5555-5555-2222");
+//		user.setUserId("manish1234");
+//		user.setUserPassword("123456");
+//		userService.registerUser(user);
+//		
 
 	}
 
