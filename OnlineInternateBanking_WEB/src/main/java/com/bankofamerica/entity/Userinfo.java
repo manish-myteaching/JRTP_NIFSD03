@@ -1,6 +1,6 @@
 package com.bankofamerica.entity;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -16,10 +16,11 @@ import lombok.Data;
 @Entity
 @Table(name = "USERS")
 @Data
-public class User {
+public class Userinfo {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "ID")
 	private Long id;
 
 	@Column(name = "FIRST_NAME")
@@ -47,11 +48,13 @@ public class User {
 	private String userPassword;
 
 	@CreationTimestamp
-	@Column(name = "CREATED_DATE",updatable = false, nullable = false)
-	private LocalDate createdDate;
+	@Column(name = "CREATED_DATE", updatable = false, nullable = false)
+	private LocalDateTime  createdDate;
 
 	@UpdateTimestamp
-	@Column(name = "UPDATED_DATE",nullable = false)
-	private LocalDate updateDate;
-
+	@Column(name = "UPDATED_DATE", nullable = false)
+	private LocalDateTime  updateDate;
+	
+	
+	
 }
